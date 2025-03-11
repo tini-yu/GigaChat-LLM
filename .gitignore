@@ -1,0 +1,9 @@
+venv
+cache
+.env
+__pycache__
+Dockerfile
+.dockerignore
+other_requirements.txt
+testagent.py
+README.md
