@@ -1,0 +1,9 @@
+./venv
+./cache
+./__pycache__
+./utils/__pycache__
+
+.gitignore
+other_requirements.txt
+README.md
+testagent.py
