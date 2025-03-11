@@ -55,7 +55,7 @@ async def get_answer(question: dict):
             
             end = time.time()
             print('It took {} seconds to finish execution.'.format(round(end-start)))
-            return {"text":response}
+            return {"message":response}
         except asyncio.TimeoutError:
             return {"message":"ОШИБКА: Время ожидания запроса превысило 120 секунд."}
 
@@ -63,4 +63,3 @@ async def get_answer(question: dict):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT is not set
     uvicorn.run(app, host="0.0.0.0", port=port)
-    
