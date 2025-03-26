@@ -21,6 +21,9 @@ from langchain.schema import Document
 import os
 from typing import List
 from dotenv import load_dotenv
+import logging
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -417,9 +420,13 @@ def get_answer(question: dict):
             value = question[key]
             if value != "":
                 adr += f"{value} "
-        user_query = f"1. Расскажи мне информацию о {adr}. 2. Расскажи об интересных местах вокруг."
-        print(user_query)
-        response = tour_guide.run(user_query)
+        logger.info(f"Address: {adr}; JSON:\n\t{question}")
+        if adr != "":
+            user_query = f"1. Расскажи мне информацию о {adr}. 2. Расскажи об интересных местах вокруг."
+            response = tour_guide.run(user_query)
+        else:
+            response = "ОШИБКА: Недостаточно данных о выбранном месте (пустой адрес)"
+            logger.warning("Empty address")
     except:
         return "ОШИБКА при вызове Гигачата"
     if len(response) > 5 and response[0:5] == "Error":

@@ -3,5 +3,5 @@ cache
 .env
 __pycache__
 other_requirements.txt
-testagent.py
 README.md
+llm.log

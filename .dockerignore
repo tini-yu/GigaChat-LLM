@@ -6,4 +6,5 @@
 .gitignore
 other_requirements.txt
 README.md
-testagent.py
+
+llm.log

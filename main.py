@@ -5,13 +5,16 @@ from fastapi import FastAPI
 import uvicorn
 from dotenv import load_dotenv
 from pydantic import BaseModel
+import logging
+
+logging.basicConfig(level=logging.INFO, filename=f"llm.log",filemode="a", format="%(name)s %(asctime)s | %(levelname)s | %(message)s", encoding='utf-8')
 
 import agent2_0
 import testagent
 
 app = FastAPI()
 load_dotenv()
-semaphore = asyncio.Semaphore(2)
+semaphore = asyncio.Semaphore(10)
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -30,6 +33,10 @@ app.add_middleware(
 # class Request(BaseModel):
 #     info: dict
 
+requestuuid = 0
+logger = logging.getLogger(__name__)
+logger.info("APP STARTED")
+
 @app.get("/")
 def read_root():
     return {"api для запросы к ЛЛМ"}
@@ -37,14 +44,17 @@ def read_root():
 
 @app.post("/ask")
 async def get_answer(question: dict):
+    logger.info(f"Input: {question}")
 
     #Если запрос находится в очереди больше 300 секунд - возвращает ошибку:
     start_time = time.time()
 
     async with semaphore:
         wait_time = time.time() - start_time
+        logger.info(f"Queue time: {wait_time}")
         if wait_time > 300:
             start_time = time.time()
+            logger.error("Time in queue over 300s")
             return {"message": "ОШИБКА: Время ожидания запроса в очереди превысило 300 секунд."}
         
         #Если запрос в течении 120 секунд не обработан, возвращает ошибку:
@@ -54,9 +64,12 @@ async def get_answer(question: dict):
             response = await asyncio.wait_for(asyncio.to_thread(testagent.get_answer, question), timeout=120)
             
             end = time.time()
+            overall_time = round(end-start)
+            logger.info(f'It took {overall_time} seconds to finish execution.')
             print('It took {} seconds to finish execution.'.format(round(end-start)))
             return {"message":response}
         except asyncio.TimeoutError:
+            logger.error("LLM generation took over 120s")
             return {"message":"ОШИБКА: Время ожидания запроса превысило 120 секунд."}
 
 
