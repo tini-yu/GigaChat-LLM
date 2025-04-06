@@ -40,6 +40,6 @@ def get_answer(question: dict):
         response = "ОШИБКА: Недостаточно данных о выбранном месте (пустой адрес)"
         logger.warning("Empty address")
     
-    sleep = random.randint(3, 4)
-    time.sleep(sleep)
+    # sleep = random.randint(3, 4)
+    # time.sleep(sleep)
     return response

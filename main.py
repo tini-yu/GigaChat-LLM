@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 import logging
 
-logging.basicConfig(level=logging.INFO, filename=f"llm.log",filemode="a", format="%(name)s %(asctime)s | %(levelname)s | %(message)s", encoding='utf-8')
+log_directory = "./llm_logs"
+os.makedirs(log_directory, exist_ok=True)
+log_file = os.path.join(log_directory, "llm.log")
+logging.basicConfig(level=logging.INFO, filename=log_file, filemode="a", format="%(name)s %(asctime)s | %(levelname)s | %(message)s", encoding='utf-8')
 
 import agent2_0
 import testagent
